@@ -5,9 +5,10 @@ import bisect
 from .manager import StaticIndexManager
 from .postings import Postings
 try:
-    from .svbcomp import load2
+    from .svbcomp import load2, load2_to_np
 except ImportError:
     from ._compress import load2
+    load2_to_np = load2
 
 """
 This file wraps the rest of the library so that it works with Whoosh.
@@ -131,14 +132,21 @@ class Matcher(whooshMatcher):
 
     def value_as(self, astype):
         if astype == 'positions':
-            return load2(self.postings[self._current][2])
+            p = self._postings[self._current]
+            return load2(p[2],p[1])
         elif astype == 'frequency':
             return self.postings[self._current][1]
         else:
             raise NotImplementedError('Value as ' + str(astype) + ' is not implemented!')
 
     def value_as_positions(self):
-        return load2(self._postings[self._current][2])
+        p = self._postings[self._current]
+        return load2(p[2],p[1])
+
+    def value_as_positions_np(self):
+        """returns numpy array instead of python array"""
+        p = self._postings[self._current]
+        return load2_to_np(p[2],p[1])
 
     def weight(self):
         """weight seems to mean term frequency in current document"""

@@ -1,6 +1,8 @@
 from cpython cimport array
 import array
 from libc.stdlib cimport malloc, free
+cimport numpy as np
+import numpy as np
 
 cdef extern from "inttypes.h":
     ctypedef unsigned int uint32_t
@@ -38,7 +40,7 @@ def dump2(array.array arr, size_t length):
 def load1(bytes b, uint32_t length):
     cdef size_t size = length * sizeof(uint32_t)
     cdef uint32_t *rec = <uint32_t *>malloc(size)
-    res2 = streamvbyte_delta_decode(b, rec, length, PREV)
+    streamvbyte_delta_decode(b, rec, length, PREV)
     a = array.array('I',[])
     a.frombytes((<char *>rec)[:size])
     free(rec)
@@ -47,8 +49,24 @@ def load1(bytes b, uint32_t length):
 def load2(bytes b, uint64_t length):
     cdef size_t size = length * sizeof(uint32_t)
     cdef uint32_t *rec = <uint32_t *>malloc(size)
-    res2 = masked_vbyte_decode_delta(b, rec, length, PREV)
+    masked_vbyte_decode_delta(b, rec, length, PREV)
     a = array.array('I',[])
     a.frombytes((<char *>rec)[:size])
+    free(rec)
+    return a
+
+def load1_to_np(bytes b, uint32_t length):
+    cdef size_t size = length * sizeof(uint32_t)
+    cdef uint32_t *rec = <uint32_t *>malloc(size)
+    streamvbyte_delta_decode(b, rec, length, PREV)
+    a = np.fromstring((<char *>rec)[:size], dtype=np.uint32)
+    free(rec)
+    return a
+
+def load2_to_np(bytes b, uint32_t length):
+    cdef size_t size = length * sizeof(uint32_t)
+    cdef uint32_t *rec = <uint32_t *>malloc(size)
+    masked_vbyte_decode_delta(b, rec, length, PREV)
+    a = np.fromstring((<char *>rec)[:size], dtype=np.uint32)
     free(rec)
     return a
