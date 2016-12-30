@@ -32,43 +32,27 @@ Datasets used are text collections from [this site](http://dhresourcesforproject
 - TCP-ECCO (170mb uncompressed) can be downloaded [here](https://github.com/Early-Modern-OCR/TCP-ECCO-texts/archive/master.zip)
 - Lincoln (700kb uncompressed) can be downloaded [here](http://oldsite.english.ucsb.edu/faculty/ayliu/unlocked/lincoln/lincoln-speeches-and-writings.zip)
 
-##### Index time
+#### Index time
 
-|Dataset   |Index time (single process)   |Index time (multi process)     |
-|---|---|---|
-| Swhoosh (Lincoln) | ~0.32s  | -  |
-| Whoosh (Lincoln) | ~1.03s  | -  |
-| Swhoosh (TCP-ECCO)  | ~66.6s  | ~27.7s  |
-| Whoosh (TCP-ECCO)  | ~175.1s  | ~147.7s  |
+|Dataset   | Whoosh   | Swhoosh    | Speedup |
+|---|---|---|---|
+| Lincoln | ~1.03s |  ~0.32s  | 69% |
+| TCP-ECCO (single process) | ~175.1s  | ~66.6s  | 62% |
+| TCP-ECCO (multi process) | ~147.7s  | ~27.7s  | 81% |
 
-##### Index Size
+#### Index Size
 
-|Dataset   |Index size  |
-|---|---|
-| Swhoosh (Lincoln) | 700kb  |
-| Whoosh (Lincoln) | 1.5mb  |
-| Swhoosh (TCP-ECCO)  | 102mb  |
-| Whoosh (TCP-ECCO)  | 170mb  |
+|Dataset   | Whoosh   | Swhoosh    | Space saved |
+|---|---|---|---|
+| Lincoln | 1.5mb  | 700kb  | 53% |
+| TCP-ECCO | 170mb  | 102mb  | 40% |
 
-##### Query Time (on TCP-ECCO)
+#### Query Time
 
-###### 3 word queries (disjunctive / OR)
+All queries disjunctive OR, on TCP-ECCO, using default BM25 scoring.
 
-- Swhoosh time per query: 3.83 ms
-- Whoosh time per query: 9.07 ms
-
-Swhoosh was 58% percent faster.
-
-###### 6 word queries (disjunctive / OR)
-
-- Swhoosh time per query: 5.54 ms
-- Whoosh time per query: 14.36 ms
-
-Swhoosh was 61% percent faster.
-
-###### 30 word queries (disjunctive / OR)
-
-- Swhoosh time per query: 48.19 ms
-- Whoosh time per query: 92.54 ms
-
-Swhoosh was 48% percent faster.
+| Query length  | Whoosh   | Swhoosh    | Speedup |
+|---|---|---|---|
+| 3 words  |9.07 ms   | 3.83 ms  | 58%   |
+| 6 words  | 14.36 ms  | 5.54 ms  |  61%   |
+| 30 words  | 92.54 ms  | 48.19 ms  | 48%  |
