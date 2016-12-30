@@ -1,0 +1,14 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# other
+wind/*
+wind2/*
+randomIdx/*
+randomIdx2/*
+TCP-ECCO/
