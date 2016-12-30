@@ -1,6 +1,9 @@
 from .indices import *
 import whoosh, sys, pickle, os, numpy as np, multiprocessing as mp
 
+"""This is the equivalent of Whoosh's "Index". It manges multiple underlying indexes according
+to a schema."""
+
 class _IndexBuilderProcess(mp.Process):
     """This is a version of StaticIndexManager stripped to the essentials, made to work as a
     child process for StaticIndexManager.add_documents_multiprocessing()."""

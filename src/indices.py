@@ -7,11 +7,28 @@ except ImportError:
     from ._compress import *
 
 """
-Current contents for term info is a 4-tuple:
+Indexes represent an index over a single field (e.g., the body text of a document, or the document's
+abstract). Indexes have a _termDict that maps from terms to (terminfo, postings) tuples.
+
+Current contents of terminfo is a 4-tuple:
 0. overall frequency of the term,
 1. num_docs term appears in,
 2. maximum frequency of term in all docs the term appears in,
 3. minimum document length of all docs the term appears in
+
+Postings depend on the index format:
+    * existence: 1-tuple of (docId)
+    * frequency: 2-tuple of (docId, frequency)
+    * positions: 3-tuple of (docId, frequency, compressedPositions)
+
+You uncompress compressedPositions with the "load2" function. It will uncompressed to an
+    array.array('I',[...])
+
+Documents are always added to a RAMIndex, never directly to a DiskIndex. The RAMIndex is then
+either written to disk or merged with one or more DiskIndex with the three utility functions:
+    * BaseIndex.write_index_to_disk
+    * BaseIndex.merge_indices_ordered
+    * BaseIndex.merge_indeces_unordered
 """
 
 DEFAULT_MERGE_BUFFERSIZE = 2*1024*1024
@@ -174,9 +191,9 @@ class RAMIndex(BaseIndex):
     """
     Abstract class for indexes held in RAM. Can be used as an ExistenceIndex.
 
-    * Dictionary to term info is a standard Python dictionary.
-    * Term info is a list/tuple of (overall frequency, num_docs, term postings).
-    * Term postings for base class are a sorted list of (docId).
+    * Dictionary to (terminfo, postings) is a standard Python dictionary.
+    * Terminfo is a 4-tuple in the format specified at the top of this file.
+    * Postings are a sorted list of (docId).
     """
 
     def __init__(self, field):
@@ -205,9 +222,9 @@ class FrequencyIndex(RAMIndex):
     """
     Static inverted index for a field that supports frequency, held in RAM.
 
-    * Dictionary to term info is a standard Python dictionary.
-    * Term info is a list/tuple of (overall frequency, num_docs, term postings).
-    * Term postings for a term are a sorted list of (docId, freq).
+    * Dictionary to (terminfo, postings) is a standard Python dictionary.
+    * Terminfo is a 4-tuple in the format specified at the top of this file.
+    * Postings are a sorted list of (docId, frequency).
     """
 
     def _add_tokenStream(self, tokenStream, docId):
@@ -243,9 +260,9 @@ class PositionIndex(RAMIndex):
     """
     Static inverted index for a field that supports positions, held in RAM.
 
-    * Dictionary to term info is a standard Python dictionary.
-    * Term info is a list/tuple of (overall frequency, num_docs, term postings).
-    * Term postings for a term are a sorted list of (docId, freq, docPostings).
+    * Dictionary to (terminfo, postings) is a standard Python dictionary.
+    * Terminfo is a 4-tuple in the format specified at the top of this file.
+    * Postings are a sorted list of (docId, frequency, compressedPostings).
     """
 
     def _add_tokenStream(self, tokenStream, docId):

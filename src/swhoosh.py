@@ -9,6 +9,10 @@ try:
 except ImportError:
     from ._compress import load2
 
+"""
+This file wraps the rest of the library so that it works with Whoosh.
+"""
+
 class Index(StaticIndexManager, whooshIndex):
     """A thin wrapper over StaticIndexManager that also subclasses the whoosh index"""
 

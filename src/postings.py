@@ -5,8 +5,13 @@ except ImportError:
 
 class Postings():
     """
-    The postings for a single term, which is a sorted list of (docId, freq, docPostings).
-    * docPostings is an array of positions within the document.
+    The postings for a single term, which is a sorted list of, by index format:
+        * existence: 1-tuple of (docId)
+        * frequency: 2-tuple of (docId, frequency)
+        * positions: 3-tuple of (docId, frequency, compressedPositions)
+
+    You uncompress compressedPositions with the "load2" function. It will uncompressed to an
+        array.array('I',[...])
     """
 
     def __init__(self, postings):
