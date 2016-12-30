@@ -1,6 +1,6 @@
 # A leaner, faster backend for Whoosh
 
-Whoosh is great, but was working a bit too slow for my purposes (which require fast access to postings and slightly big data (~200GB)). Rather than jump ship to Lucene or some other IR framework, I built this backend for Whoosh, which in addition to having fast postings access also ended up being quite a bit faster than Whoosh's default backend.
+[Whoosh](http://whoosh.readthedocs.io/en/latest/index.html) is great, but was working a bit too slow for my purposes (which require fast access to postings and slightly big data (~200GB)). Rather than jump ship to Lucene or some other IR framework, I built this backend for Whoosh, which in addition to having fast postings access also ended up being quite a bit faster than Whoosh's default backend.
 
 ### Benefits of this backend
 
@@ -12,7 +12,7 @@ Whoosh is great, but was working a bit too slow for my purposes (which require f
 
 ### Limitations of this backend
 
-- very lean / only supports a static index; there is no delete document, only add documents; there is no support segments, so adding individual documents requires the entire index to be rewritten (i.e., should add documents in bulk).
+- very lean / only supports a static index; there is no delete document, only add documents; there is no support for segments, so adding individual documents requires the entire index to be rewritten (i.e., should add documents in bulk).
 - no block quality (TODO)
 - bare minimum testing (in the notebook)
 - the reduction in index size, and a small part of the speed boost is from using [this](https://github.com/lemire/streamvbyte) and [this](https://github.com/lemire/MaskedVByte) via a cython wrapper for postings compression. Very fast, but requires a recent Intel processor (e.g., Haswell). You may need to recompile the cython for this to work in your environment (run `python setup.py build_ext --inplace` in the streamvbyte directory to make a compatible .so file). It will fall back on pickle if you don't have this, which is not nearly as good (but still faster than default whoosh).
